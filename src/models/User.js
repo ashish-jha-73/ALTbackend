@@ -141,6 +141,20 @@ const progressSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    diagnostic_completed: {
+      type: Boolean,
+      default: false,
+    },
+    learner_level: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 4,
+    },
+    diagnostic_score: {
+      type: Number,
+      default: 0,
+    },
   },
   { _id: false }
 );

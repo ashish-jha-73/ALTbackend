@@ -38,7 +38,7 @@ const questionSchema = new mongoose.Schema(
     },
     question_type: {
       type: String,
-      enum: ['mcq', 'step', 'error_detection', 'fill_blank'],
+      enum: ['mcq', 'step', 'error_detection', 'fill_blank', 'match', 'drag_sort'],
       default: 'mcq',
       index: true,
     },

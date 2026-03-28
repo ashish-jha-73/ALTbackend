@@ -1,5 +1,5 @@
 const DIFFICULTY_ORDER = ['easy', 'medium', 'hard'];
-const QUESTION_TYPES = ['mcq', 'step', 'error_detection', 'fill_blank'];
+const QUESTION_TYPES = ['mcq', 'step', 'error_detection', 'fill_blank', 'match', 'drag_sort'];
 const MASTERY_UNLOCK_THRESHOLD = 0.7;
 
 const CONCEPT_GRAPH = [
@@ -8,28 +8,49 @@ const CONCEPT_GRAPH = [
     label: 'Expressions',
     prerequisites: [],
     subtopic: 'algebraic_expressions',
-    skills: ['identify_like_terms', 'combine_coefficients'],
+    skills: ['identify_like_terms', 'combine_coefficients', 'identify_variables', 'add_expressions', 'subtract_expressions'],
   },
   {
-    id: 'simplification_arena',
-    label: 'Simplification',
+    id: 'multiplication_expressions',
+    label: 'Multiplication & Identities',
     prerequisites: ['expressions_foundation'],
     subtopic: 'algebraic_expressions',
-    skills: ['distributive_property', 'remove_brackets', 'collect_like_terms'],
+    skills: ['multiply_monomials', 'distributive_property', 'foil_method', 'algebraic_identities'],
   },
   {
-    id: 'equation_dojo',
-    label: 'Equations',
-    prerequisites: ['simplification_arena'],
+    id: 'equation_basics',
+    label: 'Equation Basics',
+    prerequisites: ['expressions_foundation'],
     subtopic: 'linear_equations',
-    skills: ['inverse_operation', 'balance_method', 'two_step_solving'],
+    skills: ['identify_equation', 'lhs_rhs', 'balance_method', 'check_solution'],
   },
   {
-    id: 'word_problem_lab',
+    id: 'equation_solving',
+    label: 'Solving Equations',
+    prerequisites: ['equation_basics'],
+    subtopic: 'linear_equations',
+    skills: ['transposition', 'solve_brackets', 'cross_multiplication', 'clear_fractions'],
+  },
+  {
+    id: 'advanced_equations',
+    label: 'Advanced Equations',
+    prerequisites: ['equation_solving'],
+    subtopic: 'linear_equations',
+    skills: ['collect_variables', 'variables_both_sides', 'special_cases'],
+  },
+  {
+    id: 'word_problems_basic',
     label: 'Word Problems',
-    prerequisites: ['equation_dojo'],
-    subtopic: 'linear_equations',
-    skills: ['equation_translation', 'multi_step_reasoning'],
+    prerequisites: ['equation_solving'],
+    subtopic: 'word_problems',
+    skills: ['equation_translation', 'age_problems', 'perimeter_problems', 'speed_problems', 'money_problems'],
+  },
+  {
+    id: 'word_problems_advanced',
+    label: 'Advanced Word Problems',
+    prerequisites: ['word_problems_basic', 'advanced_equations'],
+    subtopic: 'word_problems',
+    skills: ['digit_problems', 'ratio_problems', 'mixture_problems'],
   },
 ];
 

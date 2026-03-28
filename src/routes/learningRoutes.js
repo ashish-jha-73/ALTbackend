@@ -8,6 +8,11 @@ const {
   getConceptMap,
   getSessionSummary,
 } = require('../controllers/learningController');
+const {
+  getDiagnosticQuestions,
+  submitDiagnostic,
+  getTeachingContent,
+} = require('../controllers/diagnosticController');
 
 const router = express.Router();
 
@@ -19,5 +24,8 @@ router.get('/next-question', nextQuestion);
 router.get('/progress', getProgress);
 router.get('/concept-map', getConceptMap);
 router.get('/session-summary', getSessionSummary);
+router.get('/diagnostic', getDiagnosticQuestions);
+router.post('/diagnostic', submitDiagnostic);
+router.get('/teaching-content', getTeachingContent);
 
 module.exports = router;

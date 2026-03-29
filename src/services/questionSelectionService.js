@@ -165,6 +165,90 @@ async function selectQuestionForAction(user, action) {
   };
 }
 
+async function selectQuestionForConcept(user, action, conceptId) {
+  // Find the concept node in graph
+  const conceptNode = CONCEPT_GRAPH.find((n) => n.id === conceptId) || CONCEPT_GRAPH[0];
+  const weakestSkill = getWeakestSkill(user, conceptNode);
+
+  const query = buildQuestionQuery({
+    user,
+    conceptId,
+    weakestSkill: weakestSkill.skill,
+    action,
+  });
+
+  let candidates = await Question.find(query).limit(80);
+
+  if (!candidates.length) {
+    candidates = await Question.find({
+      concept: conceptId,
+      difficulty: action.difficulty,
+      _id: { $nin: user.progress.question_history || [] },
+    }).limit(80);
+  }
+
+  if (!candidates.length) {
+    candidates = await Question.find({
+      concept: conceptId,
+      _id: { $nin: user.progress.question_history || [] },
+    }).limit(80);
+  }
+
+  if (!candidates.length) {
+    candidates = await Question.find({ concept: conceptId }).limit(80);
+  }
+
+  if (!candidates.length) return null;
+
+  const attemptsMap = await getAttemptsByQuestion(user._id);
+
+  const history = user.progress.question_history || [];
+  const lastQuestionId = history.length ? history[history.length - 1] : null;
+  let lastQuestionType = null;
+  if (lastQuestionId) {
+    try {
+      const lastQ = await Question.findById(lastQuestionId).select('question_type');
+      if (lastQ) lastQuestionType = lastQ.question_type;
+    } catch (e) {
+    }
+  }
+
+  const topPool = sortCandidates(candidates, attemptsMap).slice(0, 30);
+
+  const weights = topPool.map((q) => {
+    const attempts = attemptsMap.get(String(q._id)) || 0;
+    let w = 1 / (1 + attempts);
+    if (lastQuestionType && q.question_type === lastQuestionType) w *= 0.6;
+    w += Math.random() * 0.08;
+    return w;
+  });
+
+  const totalW = weights.reduce((s, x) => s + x, 0);
+  let r = Math.random() * totalW;
+  let chosen = topPool[0];
+  for (let i = 0; i < topPool.length; i++) {
+    r -= weights[i];
+    if (r <= 0) {
+      chosen = topPool[i];
+      break;
+    }
+  }
+
+  const conceptMastery = (Object.fromEntries(user.learner_model.knowledge || []))[conceptId] || 0;
+  const conceptStatus = conceptMastery >= MASTERY_UNLOCK_THRESHOLD ? 'completed' : 'in_progress';
+
+  return {
+    question: chosen,
+    target: {
+      concept: conceptId,
+      concept_label: conceptNode.label,
+      weakest_skill: weakestSkill.skill,
+      weakest_skill_mastery: weakestSkill.mastery,
+      concept_status: conceptStatus,
+    },
+  };
+}
+
 module.exports = {
   selectQuestionForAction,
 };

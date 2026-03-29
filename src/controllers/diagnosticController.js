@@ -250,6 +250,23 @@ async function submitDiagnostic(req, res) {
     user.progress.learner_level = level;
     user.progress.diagnostic_score = correct;
 
+    // Award XP based on weighted diagnostic performance
+    // Compute weighted score and max possible using DIAGNOSTIC_QUESTIONS
+    let weightedScore = 0;
+    let maxPossible = 0;
+    answers.forEach((a) => {
+      const q = DIAGNOSTIC_QUESTIONS.find((dq) => dq.id === a.id);
+      if (!q) return;
+      const w = q.difficulty_weight || 1;
+      maxPossible += w;
+      if (a.selected_answer === q.correct_answer) weightedScore += w;
+    });
+
+    const performanceRatio = maxPossible > 0 ? weightedScore / maxPossible : 0;
+    // Scale XP: give up to 100 XP for perfect diagnostic; scale linearly
+    const xpAwarded = Math.round(performanceRatio * 100);
+    user.progress.xp = (user.progress.xp || 0) + xpAwarded;
+
     // Adjust initial mastery based on diagnostic level
     if (level >= 3) {
       // Intermediate+: unlock more concepts
@@ -291,6 +308,8 @@ async function submitDiagnostic(req, res) {
       total,
       level_label: ['', 'Beginner', 'Basic', 'Intermediate', 'Advanced'][level],
       results,
+      xp_earned: xpAwarded || 0,
+      current_xp: user.progress.xp || 0,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });

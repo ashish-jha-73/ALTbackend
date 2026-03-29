@@ -175,7 +175,13 @@ async function nextQuestion(req, res) {
     const user = await getOrCreateUser(req.authUserId, user_name || 'Learner');
 
     const engine = chooseAdaptiveAction(user.learner_model);
-    const selected = await selectQuestionForAction(user, engine.action);
+    const requestedConcept = req.query.concept;
+    let selected = null;
+    if (requestedConcept) {
+      selected = await selectQuestionForConcept(user, engine.action, requestedConcept);
+    } else {
+      selected = await selectQuestionForAction(user, engine.action);
+    }
 
     if (!selected) {
       return res.status(404).json({ message: 'No questions available for current concept set' });

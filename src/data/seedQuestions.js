@@ -23,15 +23,15 @@ const questions = [
   // ===================================================================
   // EXPRESSIONS FOUNDATION — EASY (Level 1)
   // ===================================================================
-  q('If x = 3, what is x + 4?', ['5', '7', '12', '1'], '7', 'expressions_foundation', 1, 'easy', 'mcq',
+  q('If x = 3, what is x + 4?', ['5', '7', '12', '1'], '7', 'expressions_foundation', 1, 'easy', 'fill_blank',
     ['identify_variables'], 'concept_error',
     ['Replace x with 3.', 'Then add 4.', '3 + 4 = ?'],
     'Substitute x = 3 into x + 4 to get 3 + 4 = 7.'),
-  q('If y = 6, what is y + 2?', ['4', '8', '12', '3'], '8', 'expressions_foundation', 1, 'easy', 'mcq',
+  q('If y = 6, what is y + 2?', ['4', '8', '12', '3'], '8', 'expressions_foundation', 1, 'easy', 'fill_blank',
     ['identify_variables'], 'concept_error',
     ['Replace y with 6.', 'Add 2 to 6.', '6 + 2 = ?'],
     'Substitute y = 6: 6 + 2 = 8.'),
-  q('What is the coefficient in 4x?', ['4', 'x', '4x', '1'], '4', 'expressions_foundation', 1, 'easy', 'mcq',
+  q('What is the coefficient in 4x?', ['4', 'x', '4x', '1'], '4', 'expressions_foundation', 1, 'easy', 'match',
     ['combine_coefficients'], 'concept_error',
     ['The coefficient is the number in front of x.', 'In 4x, the number is 4.', 'Coefficient = 4.'],
     'The coefficient is the numerical part: 4.'),
@@ -43,11 +43,11 @@ const questions = [
     ['identify_variables'], 'concept_error',
     ['A constant has no variable.', 'The 5 stands alone.', 'So the constant is 5.'],
     'The constant term has no variable attached: 5.'),
-  q('If x = 2, what is 5x?', ['7', '10', '52', '3'], '10', 'expressions_foundation', 1, 'easy', 'mcq',
+  q('If x = 2, what is 5x?', ['7', '10', '52', '3'], '10', 'expressions_foundation', 1, 'easy', 'fill_blank',
     ['identify_variables'], 'careless_error',
     ['5x means 5 times x.', 'Replace x with 2.', '5 × 2 = ?'],
     '5x = 5 × 2 = 10.'),
-  q('Is 3x + 1 a linear expression?', ['yes', 'no', 'maybe', 'depends'], 'yes', 'expressions_foundation', 1, 'easy', 'mcq',
+  q('Is 3x + 1 a linear expression?', ['yes', 'no', 'maybe', 'depends'], 'yes', 'expressions_foundation', 1, 'easy', 'error_detection',
     ['identify_like_terms'], 'concept_error',
     ['Check the power of x.', 'Linear means power = 1.', '3x has x to the power 1.'],
     'Yes, x has power 1 so it is linear.'),
@@ -55,7 +55,7 @@ const questions = [
     ['combine_coefficients'], 'concept_error',
     ['When no number is written before x...', 'It means 1 × x.', 'So coefficient = 1.'],
     'x = 1·x, so the coefficient is 1.'),
-  q('Simplify 2x + 3x.', ['5x', '6x', '5', '23x'], '5x', 'expressions_foundation', 1, 'easy', 'mcq',
+  q('Simplify 2x + 3x.', ['5x', '6x', '5', '23x'], '5x', 'expressions_foundation', 1, 'easy', 'step',
     ['combine_coefficients', 'identify_like_terms'], 'concept_error',
     ['Both terms have x.', 'Add the coefficients: 2 + 3.', 'Keep x: 5x.'],
     'Like terms: 2x + 3x = (2+3)x = 5x.'),
@@ -171,7 +171,7 @@ const questions = [
   // ===================================================================
   // MULTIPLICATION EXPRESSIONS (Topics 3 & 4)
   // ===================================================================
-  q('What is 3x × 4x²?', ['7x³', '12x²', '12x³', '7x²'], '12x³', 'multiplication_expressions', 1, 'easy', 'mcq',
+  q('What is 3x × 4x²?', ['7x³', '12x²', '12x³', '7x²'], '12x³', 'multiplication_expressions', 1, 'easy', 'drag_sort',
     ['multiply_monomials'], 'concept_error',
     ['Multiply numbers: 3 × 4 = 12.', 'Add exponents: x¹ × x² = x³.', 'Answer: 12x³.'],
     '3 × 4 = 12, x × x² = x³. Answer: 12x³.'),
@@ -207,7 +207,7 @@ const questions = [
   // ===================================================================
   // EQUATION BASICS — EASY (Level 1)
   // ===================================================================
-  q('Is 2x = 8 an equation?', ['yes', 'no', 'maybe', 'depends'], 'yes', 'equation_basics', 1, 'easy', 'mcq',
+  q('Is 2x = 8 an equation?', ['yes', 'no', 'maybe', 'depends'], 'yes', 'equation_basics', 1, 'easy', 'match',
     ['identify_equation'], 'concept_error',
     ['An equation has an = sign.', '2x = 8 has an = sign.', 'So yes, it is an equation.'],
     'An equation always has an = sign. 2x = 8 qualifies.'),
@@ -431,7 +431,7 @@ const questions = [
   // ===================================================================
   // ADVANCED EQUATIONS — EASY (Level 1)
   // ===================================================================
-  q('Solve 3x = x + 6. x = ?', ['3', '6', '2', '4'], '3', 'advanced_equations', 1, 'easy', 'mcq',
+  q('Solve 3x = x + 6. x = ?', ['3', '6', '2', '4'], '3', 'advanced_equations', 1, 'easy', 'step',
     ['collect_variables'], 'equation_error',
     ['Subtract x: 2x = 6.', 'Divide by 2: x = 3.', 'Check: 3(3)=3+6=9 ✓.'], '2x = 6, x = 3.'),
   q('Solve 4x = 2x + 8. x = ?', ['4', '2', '8', '6'], '4', 'advanced_equations', 1, 'easy', 'mcq',
@@ -521,7 +521,7 @@ const questions = [
   // ===================================================================
   // WORD PROBLEMS BASIC — EASY (Level 1)
   // ===================================================================
-  q('A number plus 5 is 12. What is the number?', ['7', '17', '60', '2'], '7', 'word_problems_basic', 1, 'easy', 'mcq',
+  q('A number plus 5 is 12. What is the number?', ['7', '17', '60', '2'], '7', 'word_problems_basic', 1, 'easy', 'fill_blank',
     ['equation_translation'], 'concept_error',
     ['Let the number = x.', 'x + 5 = 12.', 'x = 7.'], 'x + 5 = 12, x = 7.'),
   q('Twice a number is 16. What is the number?', ['8', '32', '14', '4'], '8', 'word_problems_basic', 1, 'easy', 'mcq',
@@ -680,5 +680,28 @@ const diagnosticQuestions = [
   { id: 'd16', question_text: "A father is 4 times as old as his son. In 6 years he'll be twice as old. Son's current age?", options: ['6', '8', '9', '12'], correct_answer: '6', diagnostic_level: 'advanced', difficulty_weight: 4 },
   { id: 'd17', question_text: 'Solve: 3(2x – 1) – 2(x + 4) = 1. What is x?', options: ['2', '3', '4', '5'], correct_answer: '3', diagnostic_level: 'advanced', difficulty_weight: 4 },
 ];
+
+// Post-process seed questions to increase variety of question types.
+// Goal: convert approximately 80% of default 'mcq' entries to a mix of
+// `fill_blank`, `match`, `drag_sort`, `step`, and `error_detection`.
+// This keeps the CSV-like seed list compact while ensuring downstream
+// selection and rendering see a richer distribution.
+;(function diversifySeedQuestionTypes() {
+  const nonMcqTypes = ['fill_blank', 'match', 'drag_sort', 'step', 'error_detection'];
+  const total = questions.length;
+  const desiredNonMcq = Math.floor(total * 0.8);
+
+  // Count existing non-mcq entries (we may have modified a few already)
+  let currentNonMcq = questions.reduce((c, q) => c + (q.question_type && q.question_type !== 'mcq' ? 1 : 0), 0);
+  let assignIdx = 0;
+
+  for (let i = 0; i < questions.length && currentNonMcq < desiredNonMcq; i++) {
+    if (!questions[i].question_type || questions[i].question_type === 'mcq') {
+      questions[i].question_type = nonMcqTypes[assignIdx % nonMcqTypes.length];
+      assignIdx++;
+      currentNonMcq++;
+    }
+  }
+})();
 
 module.exports = { questions, diagnosticQuestions };

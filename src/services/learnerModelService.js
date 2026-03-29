@@ -1,6 +1,8 @@
 const { updateConceptMastery } = require('./masteryService');
 const { inferConfidence } = require('./scoringService');
 const { MASTERY_UNLOCK_THRESHOLD } = require('../utils/constants');
+const { updateBKT } = require('./bktService');
+
 
 function clamp01(value) {
   return Math.max(0, Math.min(1, value));
@@ -151,10 +153,12 @@ function updateLearnerState({
   const load = computeCognitiveLoad({ attempts, usedHints, timeTaken, expectedTime });
   const concept = question.concept;
   const previousMastery = user.learner_model.knowledge.get(concept) || 0.2;
-  const updatedMastery = updateConceptMastery(previousMastery, {
-    finalCorrect,
-    attempts,
-    usedHints,
+  const updatedMastery = updateBKT({
+    prior: previousMastery,
+    correct: finalCorrect,
+    slip: 0.05,
+    guess: 0.2,
+    transition: 0.1,
   });
   user.learner_model.knowledge.set(concept, updatedMastery);
 

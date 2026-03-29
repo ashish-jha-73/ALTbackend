@@ -115,8 +115,40 @@ async function selectQuestionForAction(user, action) {
 
   if (!candidates.length) return null;
 
+
   const attemptsMap = await getAttemptsByQuestion(user._id);
-  const selected = sortCandidates(candidates, attemptsMap)[0];
+
+  const history = user.progress.question_history || [];
+  const lastQuestionId = history.length ? history[history.length - 1] : null;
+  let lastQuestionType = null;
+  if (lastQuestionId) {
+    try {
+      const lastQ = await Question.findById(lastQuestionId).select('question_type');
+      if (lastQ) lastQuestionType = lastQ.question_type;
+    } catch (e) {
+    }
+  }
+
+  const topPool = sortCandidates(candidates, attemptsMap).slice(0, 30);
+
+  const weights = topPool.map((q) => {
+    const attempts = attemptsMap.get(String(q._id)) || 0;
+    let w = 1 / (1 + attempts);
+    if (lastQuestionType && q.question_type === lastQuestionType) w *= 0.6; 
+    w += Math.random() * 0.08;
+    return w;
+  });
+
+  const totalW = weights.reduce((s, x) => s + x, 0);
+  let r = Math.random() * totalW;
+  let chosen = topPool[0];
+  for (let i = 0; i < topPool.length; i++) {
+    r -= weights[i];
+    if (r <= 0) {
+      chosen = topPool[i];
+      break;
+    }
+  }
 
   const conceptMastery = (Object.fromEntries(user.learner_model.knowledge || []))[weakestConcept.id] || 0;
   const conceptStatus = conceptMastery >= MASTERY_UNLOCK_THRESHOLD ? 'completed' : 'in_progress';

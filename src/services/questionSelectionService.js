@@ -154,7 +154,7 @@ async function selectQuestionForAction(user, action) {
   const conceptStatus = conceptMastery >= MASTERY_UNLOCK_THRESHOLD ? 'completed' : 'in_progress';
 
   return {
-    question: selected,
+    question: chosen,
     target: {
       concept: weakestConcept.id,
       concept_label: weakestConcept.node.label,

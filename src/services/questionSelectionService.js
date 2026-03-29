@@ -52,14 +52,21 @@ function recentErrorType(user) {
   return tail[0] === tail[1] ? tail[1] : null;
 }
 
-function buildQuestionQuery({ user, conceptId, weakestSkill, action }) {
+function buildQuestionQuery({ user, conceptId, weakestSkill, action, allowedTypes }) {
   const query = {
     concept: conceptId,
     difficulty: action.difficulty,
-    question_type: action.questionType,
     _id: { $nin: user.progress.question_history || [] },
     skills: weakestSkill,
   };
+
+  // Prefer allowed types. If action specifies a questionType and it's allowed, use it; otherwise allow any of the allowedTypes
+  const allowed = allowedTypes || ['mcq', 'fill_in_the_blank', 'drag_and_drop'];
+  if (action.questionType && allowed.includes(action.questionType)) {
+    query.question_type = action.questionType;
+  } else {
+    query.question_type = { $in: allowed };
+  }
 
   const repeatedError = recentErrorType(user);
   if (repeatedError) {
@@ -90,6 +97,7 @@ async function selectQuestionForAction(user, action) {
     conceptId: weakestConcept.id,
     weakestSkill: weakestSkill.skill,
     action,
+    allowedTypes: ['mcq', 'fill_in_the_blank', 'drag_and_drop'],
   });
 
   let candidates = await Question.find(query).limit(80);
@@ -175,6 +183,7 @@ async function selectQuestionForConcept(user, action, conceptId) {
     conceptId,
     weakestSkill: weakestSkill.skill,
     action,
+    allowedTypes: ['mcq', 'fill_in_the_blank', 'drag_and_drop'],
   });
 
   let candidates = await Question.find(query).limit(80);
@@ -251,4 +260,5 @@ async function selectQuestionForConcept(user, action, conceptId) {
 
 module.exports = {
   selectQuestionForAction,
+  selectQuestionForConcept,
 };

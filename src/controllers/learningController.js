@@ -3,7 +3,7 @@ const User = require('../models/User');
 const Question = require('../models/Question');
 const { processAttempt } = require('../services/learningService');
 const { chooseAdaptiveAction } = require('../services/adaptiveEngineService');
-const { selectQuestionForAction } = require('../services/questionSelectionService');
+const { selectQuestionForAction, selectQuestionForConcept } = require('../services/questionSelectionService');
 const { CONCEPT_GRAPH, CONCEPT_TO_SUBTOPIC } = require('../utils/constants');
 const { getPendingLesson, markLessonAsComplete } = require('../services/lessonService');
 
@@ -181,6 +181,50 @@ async function nextQuestion(req, res) {
       selected = await selectQuestionForConcept(user, engine.action, requestedConcept);
     } else {
       selected = await selectQuestionForAction(user, engine.action);
+    }
+
+    // Ensure selected question is of an allowed type; if not, try to find a replacement
+    const allowedTypes = ['mcq', 'fill_in_the_blank', 'drag_and_drop'];
+    if (selected && selected.question && !allowedTypes.includes((selected.question.question_type || '').toLowerCase())) {
+      try {
+        const alt = await Question.findOne({
+          concept: selected.target.concept,
+          question_type: { $in: allowedTypes },
+          _id: { $nin: user.progress.question_history || [] },
+        }).sort({ createdAt: 1 }).exec();
+        if (alt) {
+          selected.question = alt;
+        }
+      } catch (e) {
+        // ignore and fall back to original selected
+      }
+    }
+
+    // If still not allowed, try to find an allowed-type question across unlocked concepts
+    if (selected && selected.question && !allowedTypes.includes((selected.question.question_type || '').toLowerCase())) {
+      try {
+        const unlocked = user.progress.unlocked_concepts || ['expressions_foundation'];
+        const history = user.progress.question_history || [];
+        const altGlobal = await Question.findOne({
+          concept: { $in: unlocked },
+          question_type: { $in: allowedTypes },
+          _id: { $nin: history },
+        }).sort({ createdAt: 1 }).exec();
+        if (altGlobal) {
+          selected.question = altGlobal;
+          selected.target = selected.target || {};
+          selected.target.concept = altGlobal.concept;
+          selected.target.weakest_skill = (altGlobal.skills && altGlobal.skills[0]) || null;
+          selected.target.weakest_skill_mastery = 0;
+        }
+      } catch (e) {
+        // ignore
+      }
+    }
+
+    // Final enforcement: if question type still not allowed, return 404
+    if (selected && selected.question && !allowedTypes.includes((selected.question.question_type || '').toLowerCase())) {
+      return res.status(404).json({ message: 'No supported question types available at this time' });
     }
 
     if (!selected) {

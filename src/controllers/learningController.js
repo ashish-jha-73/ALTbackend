@@ -184,7 +184,13 @@ async function nextQuestion(req, res) {
     }
 
     // Ensure selected question is of an allowed type; if not, try to find a replacement
-    const allowedTypes = ['mcq', 'fill_in_the_blank', 'drag_and_drop'];
+      const allowedTypes = [
+        'mcq',
+        'fill_blank',
+        'fill_in_the_blank',
+        'drag_sort',
+        'drag_and_drop',
+      ];
     if (selected && selected.question && !allowedTypes.includes((selected.question.question_type || '').toLowerCase())) {
       try {
         const alt = await Question.findOne({

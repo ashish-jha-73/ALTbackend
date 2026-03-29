@@ -289,7 +289,8 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "fill_in_the_blank",
+    "question_type": "fill_blank",
+    "options": ["binomial", "polynomial"],
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -313,7 +314,8 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "fill_in_the_blank",
+    "question_type": "fill_blank",
+    "options": ["like", "unlike"],
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -337,7 +339,8 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "fill_in_the_blank",
+    "question_type": "fill_blank",
+    "options": ["7", "-7"],
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -361,7 +364,8 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "fill_in_the_blank",
+    "question_type": "fill_blank",
+    "options": ["8x − 2y", "8x + 2y"],
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -385,7 +389,8 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "fill_in_the_blank",
+    "question_type": "fill_blank",
+    "options": ["4x", "-4x"],
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -409,7 +414,8 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "fill_in_the_blank",
+    "question_type": "fill_blank",
+    "options": ["7x² + 5x − 5", "7x² + 5x + 5"],
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -433,7 +439,8 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "fill_in_the_blank",
+    "question_type": "fill_blank",
+    "options": ["3", "2"],
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -457,7 +464,8 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "fill_in_the_blank",
+    "question_type": "fill_blank",
+    "options": ["-2a + 8b", "2a - 8b"],
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -491,7 +499,7 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "classify_expressions",
       "identify_like_terms"
@@ -525,7 +533,7 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "classify_expressions",
       "identify_like_terms"
@@ -555,7 +563,7 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "classify_expressions",
       "identify_like_terms"
@@ -1065,7 +1073,7 @@ const questions = [
     "concept": "multiplication_expressions",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "expand_expressions",
       "apply_identities"
@@ -1096,7 +1104,7 @@ const questions = [
     "concept": "multiplication_expressions",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "expand_expressions",
       "apply_identities"
@@ -1124,7 +1132,7 @@ const questions = [
     "concept": "multiplication_expressions",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "expand_expressions",
       "apply_identities"
@@ -1153,7 +1161,7 @@ const questions = [
     "concept": "multiplication_expressions",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "expand_expressions",
       "apply_identities"
@@ -1615,7 +1623,7 @@ const questions = [
     "concept": "equation_basics",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "transposition"

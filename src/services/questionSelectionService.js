@@ -61,7 +61,14 @@ function buildQuestionQuery({ user, conceptId, weakestSkill, action, allowedType
   };
 
   // Prefer allowed types. If action specifies a questionType and it's allowed, use it; otherwise allow any of the allowedTypes
-  const allowed = allowedTypes || ['mcq', 'fill_in_the_blank', 'drag_and_drop'];
+    const allowed =
+      allowedTypes || [
+        'mcq',
+        'fill_blank',
+        'fill_in_the_blank',
+        'drag_sort',
+        'drag_and_drop',
+      ];
   if (action.questionType && allowed.includes(action.questionType)) {
     query.question_type = action.questionType;
   } else {
@@ -97,7 +104,7 @@ async function selectQuestionForAction(user, action) {
     conceptId: weakestConcept.id,
     weakestSkill: weakestSkill.skill,
     action,
-    allowedTypes: ['mcq', 'fill_in_the_blank', 'drag_and_drop'],
+      allowedTypes: ['mcq', 'fill_blank', 'fill_in_the_blank', 'drag_sort', 'drag_and_drop'],
   });
 
   let candidates = await Question.find(query).limit(80);
@@ -183,7 +190,7 @@ async function selectQuestionForConcept(user, action, conceptId) {
     conceptId,
     weakestSkill: weakestSkill.skill,
     action,
-    allowedTypes: ['mcq', 'fill_in_the_blank', 'drag_and_drop'],
+      allowedTypes: ['mcq', 'fill_blank', 'fill_in_the_blank', 'drag_sort', 'drag_and_drop'],
   });
 
   let candidates = await Question.find(query).limit(80);

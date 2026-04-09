@@ -1,6 +1,55 @@
 const DIFFICULTY_ORDER = ['easy', 'medium', 'hard'];
-const QUESTION_TYPES = ['mcq', 'step', 'error_detection', 'fill_blank', 'match', 'drag_sort'];
-const MASTERY_UNLOCK_THRESHOLD = 0.7;
+const ALLOWED_QUESTION_TYPES = [
+  'mcq',
+  'fill_blank',
+  'fill_in_the_blank',
+  'drag_sort',
+  'drag_and_drop',
+];
+const QUESTION_TYPES = [...ALLOWED_QUESTION_TYPES];
+const CONCEPT_UNLOCK_RULES = {
+  masteryThreshold: 0.65,
+  // When true, concept completion/unlock happens as soon as mastery threshold is reached.
+  unlockOnMasteryOnly: true,
+  minAttemptsPerConcept: 6,
+  minCorrectPerConcept: 4,
+  minAccuracy: 0.65,
+  requireLevel: 2,
+  singleActiveConcept: true,
+};
+const MASTERY_UNLOCK_THRESHOLD = CONCEPT_UNLOCK_RULES.masteryThreshold;
+const MASTERY_UPDATE_RULES = {
+  defaultPrior: 0.2,
+  bkt: {
+    slip: 0.05,
+    guess: 0.2,
+    transition: 0.1,
+  },
+  behaviorBlendWeight: 0.28,
+  maxDeltaPerAttempt: 0.12,
+  smoothingFactor: 0.94,
+  context: {
+    difficultyGain: {
+      easy: 0.92,
+      medium: 1,
+      hard: 1.08,
+    },
+    difficultyLoss: {
+      easy: 1.04,
+      medium: 1,
+      hard: 0.96,
+    },
+    fastTimeBonus: 0.05,
+    slowTimePenalty: 0.04,
+    fastWrongPenalty: 0.03,
+    calibratedBonus: 0.04,
+    overconfidencePenalty: 0.05,
+    underconfidencePenalty: 0.02,
+    minWeight: 0.9,
+    maxWeight: 1.22,
+    maxBoostCap: 1.18,
+  },
+};
 
 const CONCEPT_GRAPH = [
   {
@@ -67,8 +116,11 @@ const MISCONCEPTION_GRAPH = {
 
 module.exports = {
   DIFFICULTY_ORDER,
+  ALLOWED_QUESTION_TYPES,
   QUESTION_TYPES,
+  CONCEPT_UNLOCK_RULES,
   MASTERY_UNLOCK_THRESHOLD,
+  MASTERY_UPDATE_RULES,
   CONCEPT_GRAPH,
   CONCEPT_TO_SUBTOPIC,
   MISCONCEPTION_GRAPH,

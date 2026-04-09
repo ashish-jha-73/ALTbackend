@@ -1,6 +1,9 @@
 const Attempt = require('../models/Attempt');
 const Question = require('../models/Question');
-const { CONCEPT_GRAPH, MASTERY_UNLOCK_THRESHOLD } = require('../utils/constants');
+const {
+  CONCEPT_GRAPH,
+  ALLOWED_QUESTION_TYPES,
+} = require('../utils/constants');
 
 function getWeakestUnlockedConcept(user) {
   const knowledge = Object.fromEntries(user.learner_model.knowledge || []);
@@ -16,6 +19,36 @@ function getWeakestUnlockedConcept(user) {
   });
 
   return weakest || { id: 'expressions_foundation', mastery: 0.2, node: CONCEPT_GRAPH[0] };
+}
+
+function getSequentialMissionConcept(user) {
+  const knowledge = Object.fromEntries(user.learner_model.knowledge || []);
+  const unlocked = new Set(user.progress.unlocked_concepts || []);
+  const completed = new Set(user.progress.completed_concepts || []);
+  const currentConcept = user.progress.current_concept;
+
+  if (currentConcept && unlocked.has(currentConcept) && !completed.has(currentConcept)) {
+    const node = CONCEPT_GRAPH.find((c) => c.id === currentConcept) || CONCEPT_GRAPH[0];
+    return {
+      id: currentConcept,
+      mastery: knowledge[currentConcept] || 0,
+      node,
+    };
+  }
+
+  const firstUnlockedIncomplete = CONCEPT_GRAPH.find(
+    (node) => unlocked.has(node.id) && !completed.has(node.id)
+  );
+
+  if (firstUnlockedIncomplete) {
+    return {
+      id: firstUnlockedIncomplete.id,
+      mastery: knowledge[firstUnlockedIncomplete.id] || 0,
+      node: firstUnlockedIncomplete,
+    };
+  }
+
+  return null;
 }
 
 function getWeakestSkill(user, conceptNode) {
@@ -52,7 +85,15 @@ function recentErrorType(user) {
   return tail[0] === tail[1] ? tail[1] : null;
 }
 
+function getAllowedTypes(allowedTypes) {
+  if (Array.isArray(allowedTypes) && allowedTypes.length) {
+    return allowedTypes;
+  }
+  return ALLOWED_QUESTION_TYPES;
+}
+
 function buildQuestionQuery({ user, conceptId, weakestSkill, action, allowedTypes }) {
+  const allowed = getAllowedTypes(allowedTypes);
   const query = {
     concept: conceptId,
     difficulty: action.difficulty,
@@ -60,15 +101,7 @@ function buildQuestionQuery({ user, conceptId, weakestSkill, action, allowedType
     skills: weakestSkill,
   };
 
-  // Prefer allowed types. If action specifies a questionType and it's allowed, use it; otherwise allow any of the allowedTypes
-    const allowed =
-      allowedTypes || [
-        'mcq',
-        'fill_blank',
-        'fill_in_the_blank',
-        'drag_sort',
-        'drag_and_drop',
-      ];
+  // Prefer the adaptive engine suggestion if it is in allowed set.
   if (action.questionType && allowed.includes(action.questionType)) {
     query.question_type = action.questionType;
   } else {
@@ -91,72 +124,78 @@ function sortCandidates(candidates, attemptsMap) {
     const aCount = attemptsMap.get(String(a._id)) || 0;
     const bCount = attemptsMap.get(String(b._id)) || 0;
     if (aCount !== bCount) return aCount - bCount;
-    return a.createdAt.getTime() - b.createdAt.getTime();
+    const aTime = a.createdAt ? a.createdAt.getTime() : 0;
+    const bTime = b.createdAt ? b.createdAt.getTime() : 0;
+    return aTime - bTime;
   });
 }
 
-async function selectQuestionForAction(user, action) {
-  const weakestConcept = getWeakestUnlockedConcept(user);
-  const weakestSkill = getWeakestSkill(user, weakestConcept.node);
+async function getRecentQuestionMeta(historyIds, limit = 8) {
+  const recentIds = (historyIds || []).slice(-limit);
+  if (!recentIds.length) return [];
 
-  const query = buildQuestionQuery({
-    user,
-    conceptId: weakestConcept.id,
-    weakestSkill: weakestSkill.skill,
-    action,
-      allowedTypes: ['mcq', 'fill_blank', 'fill_in_the_blank', 'drag_sort', 'drag_and_drop'],
-  });
+  const rows = await Question.find({ _id: { $in: recentIds } })
+    .select('_id question_type concept')
+    .exec();
+  const rowMap = new Map(rows.map((row) => [String(row._id), row]));
 
-  let candidates = await Question.find(query).limit(80);
+  return recentIds
+    .map((id) => rowMap.get(String(id)))
+    .filter(Boolean);
+}
 
-  if (!candidates.length) {
-    candidates = await Question.find({
-      concept: weakestConcept.id,
-      difficulty: action.difficulty,
-      _id: { $nin: user.progress.question_history || [] },
-    }).limit(80);
-  }
+function getRecentTypeCountsForConcept(recentQuestions, conceptId) {
+  const counts = {};
+  recentQuestions
+    .filter((q) => q.concept === conceptId)
+    .forEach((q) => {
+      const type = (q.question_type || '').toLowerCase();
+      counts[type] = (counts[type] || 0) + 1;
+    });
+  return counts;
+}
 
-  if (!candidates.length) {
-    candidates = await Question.find({
-      concept: weakestConcept.id,
-      _id: { $nin: user.progress.question_history || [] },
-    }).limit(80);
-  }
-
-  if (!candidates.length) {
-    candidates = await Question.find({ concept: weakestConcept.id }).limit(80);
-  }
-
-  if (!candidates.length) return null;
-
-
-  const attemptsMap = await getAttemptsByQuestion(user._id);
-
-  const history = user.progress.question_history || [];
-  const lastQuestionId = history.length ? history[history.length - 1] : null;
-  let lastQuestionType = null;
-  if (lastQuestionId) {
-    try {
-      const lastQ = await Question.findById(lastQuestionId).select('question_type');
-      if (lastQ) lastQuestionType = lastQ.question_type;
-    } catch (e) {
-    }
-  }
-
+function selectWeightedCandidate({
+  candidates,
+  attemptsMap,
+  lastQuestionType,
+  preferredType,
+  recentTypeCounts,
+}) {
   const topPool = sortCandidates(candidates, attemptsMap).slice(0, 30);
 
   const weights = topPool.map((q) => {
     const attempts = attemptsMap.get(String(q._id)) || 0;
+    const questionType = (q.question_type || '').toLowerCase();
+
     let w = 1 / (1 + attempts);
-    if (lastQuestionType && q.question_type === lastQuestionType) w *= 0.6; 
+
+    // Encourage engine preference but still keep type diversity.
+    if (preferredType && questionType === preferredType) {
+      w *= 1.15;
+    }
+
+    // Strongly discourage same type repetition back-to-back.
+    if (lastQuestionType && questionType === lastQuestionType) {
+      w *= 0.45;
+    }
+
+    // Within a concept/topic, prefer less recently used types.
+    const seenInRecent = recentTypeCounts[questionType] || 0;
+    if (seenInRecent === 0) {
+      w *= 1.4;
+    } else {
+      w *= 1 / (1 + seenInRecent * 0.35);
+    }
+
     w += Math.random() * 0.08;
-    return w;
+    return Math.max(w, 0.01);
   });
 
-  const totalW = weights.reduce((s, x) => s + x, 0);
+  const totalW = weights.reduce((sum, val) => sum + val, 0);
   let r = Math.random() * totalW;
   let chosen = topPool[0];
+
   for (let i = 0; i < topPool.length; i++) {
     r -= weights[i];
     if (r <= 0) {
@@ -165,14 +204,91 @@ async function selectQuestionForAction(user, action) {
     }
   }
 
-  const conceptMastery = (Object.fromEntries(user.learner_model.knowledge || []))[weakestConcept.id] || 0;
-  const conceptStatus = conceptMastery >= MASTERY_UNLOCK_THRESHOLD ? 'completed' : 'in_progress';
+  return chosen;
+}
+
+async function resolveCandidates({ user, conceptId, action, baseQuery, allowedTypes }) {
+  const history = user.progress.question_history || [];
+  const allowed = getAllowedTypes(allowedTypes);
+
+  let candidates = await Question.find(baseQuery).limit(80);
+
+  if (!candidates.length) {
+    candidates = await Question.find({
+      concept: conceptId,
+      difficulty: action.difficulty,
+      question_type: { $in: allowed },
+      _id: { $nin: history },
+    }).limit(80);
+  }
+
+  if (!candidates.length) {
+    candidates = await Question.find({
+      concept: conceptId,
+      question_type: { $in: allowed },
+      _id: { $nin: history },
+    }).limit(80);
+  }
+
+  if (!candidates.length) {
+    candidates = await Question.find({
+      concept: conceptId,
+      question_type: { $in: allowed },
+    }).limit(80);
+  }
+
+  return candidates;
+}
+
+async function selectQuestionForAction(user, action) {
+  const prioritizedConcept = getSequentialMissionConcept(user) || getWeakestUnlockedConcept(user);
+  const weakestSkill = getWeakestSkill(user, prioritizedConcept.node);
+
+  const query = buildQuestionQuery({
+    user,
+    conceptId: prioritizedConcept.id,
+    weakestSkill: weakestSkill.skill,
+    action,
+    allowedTypes: ALLOWED_QUESTION_TYPES,
+  });
+
+  const candidates = await resolveCandidates({
+    user,
+    conceptId: prioritizedConcept.id,
+    action,
+    baseQuery: query,
+    allowedTypes: ALLOWED_QUESTION_TYPES,
+  });
+
+  if (!candidates.length) return null;
+
+  const attemptsMap = await getAttemptsByQuestion(user._id);
+  const history = user.progress.question_history || [];
+  const recentQuestions = await getRecentQuestionMeta(history, 8);
+  const lastQuestionType = recentQuestions.length
+    ? (recentQuestions[recentQuestions.length - 1].question_type || '').toLowerCase()
+    : null;
+  const preferredType = ALLOWED_QUESTION_TYPES.includes((action.questionType || '').toLowerCase())
+    ? action.questionType.toLowerCase()
+    : null;
+  const recentTypeCounts = getRecentTypeCountsForConcept(recentQuestions, prioritizedConcept.id);
+
+  const chosen = selectWeightedCandidate({
+    candidates,
+    attemptsMap,
+    lastQuestionType,
+    preferredType,
+    recentTypeCounts,
+  });
+
+  const completed = new Set(user.progress.completed_concepts || []);
+  const conceptStatus = completed.has(prioritizedConcept.id) ? 'completed' : 'in_progress';
 
   return {
     question: chosen,
     target: {
-      concept: weakestConcept.id,
-      concept_label: weakestConcept.node.label,
+      concept: prioritizedConcept.id,
+      concept_label: prioritizedConcept.node.label,
       weakest_skill: weakestSkill.skill,
       weakest_skill_mastery: weakestSkill.mastery,
       concept_status: conceptStatus,
@@ -190,68 +306,40 @@ async function selectQuestionForConcept(user, action, conceptId) {
     conceptId,
     weakestSkill: weakestSkill.skill,
     action,
-      allowedTypes: ['mcq', 'fill_blank', 'fill_in_the_blank', 'drag_sort', 'drag_and_drop'],
+    allowedTypes: ALLOWED_QUESTION_TYPES,
   });
 
-  let candidates = await Question.find(query).limit(80);
-
-  if (!candidates.length) {
-    candidates = await Question.find({
-      concept: conceptId,
-      difficulty: action.difficulty,
-      _id: { $nin: user.progress.question_history || [] },
-    }).limit(80);
-  }
-
-  if (!candidates.length) {
-    candidates = await Question.find({
-      concept: conceptId,
-      _id: { $nin: user.progress.question_history || [] },
-    }).limit(80);
-  }
-
-  if (!candidates.length) {
-    candidates = await Question.find({ concept: conceptId }).limit(80);
-  }
+  const candidates = await resolveCandidates({
+    user,
+    conceptId,
+    action,
+    baseQuery: query,
+    allowedTypes: ALLOWED_QUESTION_TYPES,
+  });
 
   if (!candidates.length) return null;
 
   const attemptsMap = await getAttemptsByQuestion(user._id);
-
   const history = user.progress.question_history || [];
-  const lastQuestionId = history.length ? history[history.length - 1] : null;
-  let lastQuestionType = null;
-  if (lastQuestionId) {
-    try {
-      const lastQ = await Question.findById(lastQuestionId).select('question_type');
-      if (lastQ) lastQuestionType = lastQ.question_type;
-    } catch (e) {
-    }
-  }
+  const recentQuestions = await getRecentQuestionMeta(history, 8);
+  const lastQuestionType = recentQuestions.length
+    ? (recentQuestions[recentQuestions.length - 1].question_type || '').toLowerCase()
+    : null;
+  const preferredType = ALLOWED_QUESTION_TYPES.includes((action.questionType || '').toLowerCase())
+    ? action.questionType.toLowerCase()
+    : null;
+  const recentTypeCounts = getRecentTypeCountsForConcept(recentQuestions, conceptId);
 
-  const topPool = sortCandidates(candidates, attemptsMap).slice(0, 30);
-
-  const weights = topPool.map((q) => {
-    const attempts = attemptsMap.get(String(q._id)) || 0;
-    let w = 1 / (1 + attempts);
-    if (lastQuestionType && q.question_type === lastQuestionType) w *= 0.6;
-    w += Math.random() * 0.08;
-    return w;
+  const chosen = selectWeightedCandidate({
+    candidates,
+    attemptsMap,
+    lastQuestionType,
+    preferredType,
+    recentTypeCounts,
   });
 
-  const totalW = weights.reduce((s, x) => s + x, 0);
-  let r = Math.random() * totalW;
-  let chosen = topPool[0];
-  for (let i = 0; i < topPool.length; i++) {
-    r -= weights[i];
-    if (r <= 0) {
-      chosen = topPool[i];
-      break;
-    }
-  }
-
-  const conceptMastery = (Object.fromEntries(user.learner_model.knowledge || []))[conceptId] || 0;
-  const conceptStatus = conceptMastery >= MASTERY_UNLOCK_THRESHOLD ? 'completed' : 'in_progress';
+  const completed = new Set(user.progress.completed_concepts || []);
+  const conceptStatus = completed.has(conceptId) ? 'completed' : 'in_progress';
 
   return {
     question: chosen,

@@ -267,24 +267,24 @@ async function submitDiagnostic(req, res) {
     const xpAwarded = Math.round(performanceRatio * 100);
     user.progress.xp = (user.progress.xp || 0) + xpAwarded;
 
-    // Adjust initial mastery based on diagnostic level
+    // Conservative post-diagnostic start: keep one active concept and only adjust initial readiness.
+    user.progress.unlocked_concepts = ['expressions_foundation'];
+
     if (level >= 3) {
-      // Intermediate+: unlock more concepts
-      user.progress.unlocked_concepts = ['expressions_foundation', 'multiplication_expressions', 'equation_basics'];
       if (user.learner_model.knowledge) {
-        user.learner_model.knowledge.set('expressions_foundation', 0.5);
-        user.learner_model.knowledge.set('equation_basics', 0.3);
+        user.learner_model.knowledge.set('expressions_foundation', 0.45);
+      }
+      if (user.progress.concept_levels && typeof user.progress.concept_levels.set === 'function') {
+        user.progress.concept_levels.set('expressions_foundation', 2);
       }
     }
+
     if (level >= 4) {
-      user.progress.unlocked_concepts = [
-        'expressions_foundation', 'multiplication_expressions',
-        'equation_basics', 'equation_solving',
-      ];
       if (user.learner_model.knowledge) {
-        user.learner_model.knowledge.set('expressions_foundation', 0.6);
-        user.learner_model.knowledge.set('equation_basics', 0.5);
-        user.learner_model.knowledge.set('equation_solving', 0.3);
+        user.learner_model.knowledge.set('expressions_foundation', 0.55);
+      }
+      if (user.progress.concept_levels && typeof user.progress.concept_levels.set === 'function') {
+        user.progress.concept_levels.set('expressions_foundation', 3);
       }
     }
 

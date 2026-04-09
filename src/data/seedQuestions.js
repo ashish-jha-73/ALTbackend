@@ -284,7 +284,6 @@ const questions = [
   },
   {
     "question_text": "An expression with exactly two terms is called a ________.",
-    "options": [],
     "correct_answer": "binomial",
     "concept": "expressions_foundation",
     "level": 1,
@@ -309,7 +308,6 @@ const questions = [
   },
   {
     "question_text": "7x and 14x are ________ terms because they have the same variable raised to the same power.",
-    "options": [],
     "correct_answer": "like",
     "concept": "expressions_foundation",
     "level": 1,
@@ -334,7 +332,6 @@ const questions = [
   },
   {
     "question_text": "In the expression 7xy − 5x, the coefficient of the first term is ________.",
-    "options": [],
     "correct_answer": "7",
     "concept": "expressions_foundation",
     "level": 1,
@@ -359,7 +356,6 @@ const questions = [
   },
   {
     "question_text": "Adding 3x + 2y and 5x − 4y gives ________.",
-    "options": [],
     "correct_answer": "8x − 2y",
     "concept": "expressions_foundation",
     "level": 2,
@@ -384,7 +380,6 @@ const questions = [
   },
   {
     "question_text": "Subtracting 3x from 7x gives ________.",
-    "options": [],
     "correct_answer": "4x",
     "concept": "expressions_foundation",
     "level": 2,
@@ -409,7 +404,6 @@ const questions = [
   },
   {
     "question_text": "The sum of 7x² − 4x + 5 and 9x − 10 is ________.",
-    "options": [],
     "correct_answer": "7x² + 5x − 5",
     "concept": "expressions_foundation",
     "level": 3,
@@ -434,7 +428,6 @@ const questions = [
   },
   {
     "question_text": "The expression 2x + 3y − 5 has ________ terms.",
-    "options": [],
     "correct_answer": "3",
     "concept": "expressions_foundation",
     "level": 2,
@@ -459,7 +452,6 @@ const questions = [
   },
   {
     "question_text": "When (4a − 3b) is subtracted from (2a + 5b), the result is ________.",
-    "options": [],
     "correct_answer": "−2a + 8b",
     "concept": "expressions_foundation",
     "level": 3,
@@ -872,7 +864,6 @@ const questions = [
   },
   {
     "question_text": "(a + b)² = a² + ________ + b²",
-    "options": [],
     "correct_answer": "2ab",
     "concept": "multiplication_expressions",
     "level": 1,
@@ -896,7 +887,6 @@ const questions = [
   },
   {
     "question_text": "(a − b)² = a² − 2ab + ________",
-    "options": [],
     "correct_answer": "b²",
     "concept": "multiplication_expressions",
     "level": 1,
@@ -920,7 +910,6 @@ const questions = [
   },
   {
     "question_text": "(a + b)(a − b) = ________",
-    "options": [],
     "correct_answer": "a² − b²",
     "concept": "multiplication_expressions",
     "level": 2,
@@ -944,7 +933,6 @@ const questions = [
   },
   {
     "question_text": "The product of 5x and 3x is ________.",
-    "options": [],
     "correct_answer": "15x²",
     "concept": "multiplication_expressions",
     "level": 2,
@@ -968,7 +956,6 @@ const questions = [
   },
   {
     "question_text": "Using (a−b)², the expansion of (2x − 3)² is ________.",
-    "options": [],
     "correct_answer": "4x² − 12x + 9",
     "concept": "multiplication_expressions",
     "level": 3,
@@ -992,7 +979,6 @@ const questions = [
   },
   {
     "question_text": "Using (x+a)(x+b) = x²+(a+b)x+ab, expand (x+5)(x−2): ________",
-    "options": [],
     "correct_answer": "x² + 3x − 10",
     "concept": "multiplication_expressions",
     "level": 3,
@@ -1016,7 +1002,6 @@ const questions = [
   },
   {
     "question_text": "Using (a−b)², expand (x − 5)²: ________",
-    "options": [],
     "correct_answer": "x² − 10x + 25",
     "concept": "multiplication_expressions",
     "level": 2,
@@ -1040,7 +1025,6 @@ const questions = [
   },
   {
     "question_text": "Using (a+b)², expand (3x + 4)²: ________",
-    "options": [],
     "correct_answer": "9x² + 24x + 16",
     "concept": "multiplication_expressions",
     "level": 3,
@@ -1441,7 +1425,6 @@ const questions = [
   },
   {
     "question_text": "In the equation 5x − 3 = 12, the RHS is ________.",
-    "options": [],
     "correct_answer": "12",
     "concept": "equation_basics",
     "level": 1,
@@ -1465,7 +1448,6 @@ const questions = [
   },
   {
     "question_text": "If we move '+7' from the LHS to the RHS, it becomes ________.",
-    "options": [],
     "correct_answer": "−7",
     "concept": "equation_basics",
     "level": 1,
@@ -1489,7 +1471,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 4x = 28. The value of x is ________.",
-    "options": [],
     "correct_answer": "7",
     "concept": "equation_basics",
     "level": 2,
@@ -1513,7 +1494,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 7x − 3 = 4x + 9. The value of x is ________.",
-    "options": [],
     "correct_answer": "4",
     "concept": "equation_basics",
     "level": 2,
@@ -1537,7 +1517,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 3(2x − 1) = 2(x + 5) + 1. The value of x is ________.",
-    "options": [],
     "correct_answer": "7/2",
     "concept": "equation_basics",
     "level": 3,
@@ -1561,7 +1540,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 3 + x = 17. The value of x is ________.",
-    "options": [],
     "correct_answer": "14",
     "concept": "equation_basics",
     "level": 2,
@@ -1585,7 +1563,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 2(x + 4) = 3(x − 2). The value of x is ________.",
-    "options": [],
     "correct_answer": "14",
     "concept": "equation_basics",
     "level": 3,
@@ -1652,7 +1629,7 @@ const questions = [
     "concept": "equation_basics",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "transposition"
@@ -1682,7 +1659,7 @@ const questions = [
     "concept": "equation_basics",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "transposition"
@@ -1962,7 +1939,6 @@ const questions = [
   },
   {
     "question_text": "The solution of the equation x − 2 = 7 is x = ________.",
-    "options": [],
     "correct_answer": "9",
     "concept": "equation_solving",
     "level": 1,
@@ -1986,7 +1962,6 @@ const questions = [
   },
   {
     "question_text": "If 6x = 12, then x = ________.",
-    "options": [],
     "correct_answer": "2",
     "concept": "equation_solving",
     "level": 1,
@@ -2010,7 +1985,6 @@ const questions = [
   },
   {
     "question_text": "Solving 2x − 3 = 7, the value of x is ________.",
-    "options": [],
     "correct_answer": "5",
     "concept": "equation_solving",
     "level": 2,
@@ -2034,7 +2008,6 @@ const questions = [
   },
   {
     "question_text": "If (2x + 1)/3 = 5, then x = ________.",
-    "options": [],
     "correct_answer": "7",
     "concept": "equation_solving",
     "level": 2,
@@ -2058,7 +2031,6 @@ const questions = [
   },
   {
     "question_text": "The solution of 7x − 9 = 5x + 7 is x = ________.",
-    "options": [],
     "correct_answer": "8",
     "concept": "equation_solving",
     "level": 3,
@@ -2082,7 +2054,6 @@ const questions = [
   },
   {
     "question_text": "Solve: y + 3 = 10. The value of y is ________.",
-    "options": [],
     "correct_answer": "7",
     "concept": "equation_solving",
     "level": 1,
@@ -2106,7 +2077,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 4(x − 2) = 16. The value of x is ________.",
-    "options": [],
     "correct_answer": "6",
     "concept": "equation_solving",
     "level": 2,
@@ -2130,7 +2100,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 3(2x + 5) = 2(3x + 7) + 1. The value of x is ________.",
-    "options": [],
     "correct_answer": "no unique solution",
     "concept": "equation_solving",
     "level": 3,
@@ -2164,7 +2133,7 @@ const questions = [
     "concept": "equation_solving",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "verify_solution"
@@ -2193,7 +2162,7 @@ const questions = [
     "concept": "equation_solving",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "verify_solution"
@@ -2222,7 +2191,7 @@ const questions = [
     "concept": "equation_solving",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "verify_solution"
@@ -2252,7 +2221,7 @@ const questions = [
     "concept": "equation_solving",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "verify_solution"
@@ -2503,7 +2472,6 @@ const questions = [
   },
   {
     "question_text": "The solution of 2x/3 = 18 is x = ________.",
-    "options": [],
     "correct_answer": "27",
     "concept": "advanced_equations",
     "level": 2,
@@ -2527,7 +2495,6 @@ const questions = [
   },
   {
     "question_text": "Solving (x+1)/(2x+3) = 3/8, cross-multiplying gives 8x+8 = 6x+9, so x = ________.",
-    "options": [],
     "correct_answer": "1/2",
     "concept": "advanced_equations",
     "level": 3,
@@ -2551,7 +2518,6 @@ const questions = [
   },
   {
     "question_text": "If z/(z+15) = 4/9, then z = ________.",
-    "options": [],
     "correct_answer": "12",
     "concept": "advanced_equations",
     "level": 3,
@@ -2575,7 +2541,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 2x − 5 = −11. The value of x is ________.",
-    "options": [],
     "correct_answer": "−3",
     "concept": "advanced_equations",
     "level": 2,
@@ -2599,7 +2564,6 @@ const questions = [
   },
   {
     "question_text": "After multiplying (3x−1)/4 − (2x+3)/6 = 1 by LCM 12, we get 9x−3−4x−6 = 12, so x = ________.",
-    "options": [],
     "correct_answer": "21/5",
     "concept": "advanced_equations",
     "level": 3,
@@ -2623,7 +2587,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 3x/4 = 9. The value of x is ________.",
-    "options": [],
     "correct_answer": "12",
     "concept": "advanced_equations",
     "level": 2,
@@ -2647,7 +2610,6 @@ const questions = [
   },
   {
     "question_text": "Solving 5(x − 2)/3 = 2(x + 1)/2, the value of x is ________.",
-    "options": [],
     "correct_answer": "13/2",
     "concept": "advanced_equations",
     "level": 3,
@@ -2682,7 +2644,7 @@ const questions = [
     "concept": "advanced_equations",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "cross_multiplication"
@@ -2711,7 +2673,7 @@ const questions = [
     "concept": "advanced_equations",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "cross_multiplication"
@@ -2740,7 +2702,7 @@ const questions = [
     "concept": "advanced_equations",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "cross_multiplication"
@@ -3020,7 +2982,6 @@ const questions = [
   },
   {
     "question_text": "If the sum of two consecutive integers is 31, then the smaller integer is ________.",
-    "options": [],
     "correct_answer": "15",
     "concept": "word_problems_basic",
     "level": 1,
@@ -3044,7 +3005,6 @@ const questions = [
   },
   {
     "question_text": "A number when doubled and then increased by 3 gives 11. The number is ________.",
-    "options": [],
     "correct_answer": "4",
     "concept": "word_problems_basic",
     "level": 1,
@@ -3068,7 +3028,6 @@ const questions = [
   },
   {
     "question_text": "Three times a number minus 7 equals 14. The number is ________.",
-    "options": [],
     "correct_answer": "7",
     "concept": "word_problems_basic",
     "level": 2,
@@ -3092,7 +3051,6 @@ const questions = [
   },
   {
     "question_text": "A father is 30 years older than his son. In 5 years, he will be twice as old as his son. The son's present age is ________.",
-    "options": [],
     "correct_answer": "25",
     "concept": "word_problems_basic",
     "level": 2,
@@ -3116,7 +3074,6 @@ const questions = [
   },
   {
     "question_text": "The product of 6 and a number is 54. The number is ________.",
-    "options": [],
     "correct_answer": "9",
     "concept": "word_problems_basic",
     "level": 1,
@@ -3140,7 +3097,6 @@ const questions = [
   },
   {
     "question_text": "The sum of three consecutive odd numbers is 51. The middle number is ________.",
-    "options": [],
     "correct_answer": "17",
     "concept": "word_problems_basic",
     "level": 2,
@@ -3164,7 +3120,6 @@ const questions = [
   },
   {
     "question_text": "Two numbers are in ratio 3:5. Their sum is 64. The larger number is ________.",
-    "options": [],
     "correct_answer": "40",
     "concept": "word_problems_basic",
     "level": 3,
@@ -3198,7 +3153,7 @@ const questions = [
     "concept": "word_problems_basic",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "equation_translation"
@@ -3256,7 +3211,7 @@ const questions = [
     "concept": "word_problems_basic",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "equation_translation"
@@ -3485,7 +3440,6 @@ const questions = [
   },
   {
     "question_text": "The denominator of a rational number is greater than its numerator by 8. After changes, fraction = 3/2. The original numerator is ________.",
-    "options": [],
     "correct_answer": "13",
     "concept": "word_problems_advanced",
     "level": 3,
@@ -3509,7 +3463,6 @@ const questions = [
   },
   {
     "question_text": "Present ages of Anu and Raj are in ratio 4:5. Eight years later ratio is 5:6. Raj's present age is ________.",
-    "options": [],
     "correct_answer": "40",
     "concept": "word_problems_advanced",
     "level": 2,
@@ -3533,7 +3486,6 @@ const questions = [
   },
   {
     "question_text": "Hari's age 4 years from now = 3 times his age 4 years ago. Hari's present age is ________.",
-    "options": [],
     "correct_answer": "8",
     "concept": "word_problems_advanced",
     "level": 3,
@@ -3557,7 +3509,6 @@ const questions = [
   },
   {
     "question_text": "Hari and Harry's ages are in ratio 5:7. Four years later ratio is 3:4. Hari's present age is ________.",
-    "options": [],
     "correct_answer": "20",
     "concept": "word_problems_advanced",
     "level": 2,
@@ -3581,7 +3532,6 @@ const questions = [
   },
   {
     "question_text": "Hari and Harry's ages are in ratio 5:7. Four years from now ratio is 3:4. Harry's present age is ________.",
-    "options": [],
     "correct_answer": "28",
     "concept": "word_problems_advanced",
     "level": 3,
@@ -3605,7 +3555,6 @@ const questions = [
   },
   {
     "question_text": "A two-digit number is 4 times the sum of its digits. If 27 is added, digits are reversed. The tens digit of the original number is ________.",
-    "options": [],
     "correct_answer": "3",
     "concept": "word_problems_advanced",
     "level": 3,
@@ -3640,7 +3589,7 @@ const questions = [
     "concept": "word_problems_advanced",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "ratio_problems"
@@ -3670,7 +3619,7 @@ const questions = [
     "concept": "word_problems_advanced",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "ratio_problems"
@@ -3700,7 +3649,7 @@ const questions = [
     "concept": "word_problems_advanced",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "ratio_problems"
@@ -3758,7 +3707,7 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -3787,7 +3736,7 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "evaluate_expressions",
       "identify_variables"
@@ -3821,7 +3770,7 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "identify_like_terms",
       "classify_expressions"
@@ -3851,7 +3800,7 @@ const questions = [
     "concept": "expressions_foundation",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "identify_like_terms",
       "combine_coefficients"
@@ -3870,7 +3819,6 @@ const questions = [
   },
   {
     "question_text": "The degree of the expression 5x³y² is ________.",
-    "options": [],
     "correct_answer": "5",
     "concept": "expressions_foundation",
     "level": 3,
@@ -3894,7 +3842,6 @@ const questions = [
   },
   {
     "question_text": "The value of 2x² + 3 when x = −2 is ________.",
-    "options": [],
     "correct_answer": "11",
     "concept": "expressions_foundation",
     "level": 2,
@@ -3928,7 +3875,7 @@ const questions = [
     "concept": "multiplication_expressions",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "apply_identities",
       "expand_expressions"
@@ -3957,7 +3904,7 @@ const questions = [
     "concept": "multiplication_expressions",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "apply_identities",
       "expand_expressions"
@@ -3987,7 +3934,7 @@ const questions = [
     "concept": "multiplication_expressions",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "multiply_polynomials",
       "expand_expressions"
@@ -4016,7 +3963,7 @@ const questions = [
     "concept": "multiplication_expressions",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "apply_identities",
       "expand_expressions"
@@ -4035,7 +3982,6 @@ const questions = [
   },
   {
     "question_text": "(x + 7)(x − 7) = x² − ________",
-    "options": [],
     "correct_answer": "49",
     "concept": "multiplication_expressions",
     "level": 1,
@@ -4059,7 +4005,6 @@ const questions = [
   },
   {
     "question_text": "The expansion of (5x)² is ________",
-    "options": [],
     "correct_answer": "25x²",
     "concept": "multiplication_expressions",
     "level": 1,
@@ -4093,7 +4038,7 @@ const questions = [
     "concept": "equation_basics",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "transposition"
@@ -4122,7 +4067,7 @@ const questions = [
     "concept": "equation_basics",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "transposition"
@@ -4151,7 +4096,7 @@ const questions = [
     "concept": "equation_basics",
     "level": 1,
     "difficulty": "easy",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "verify_solution",
       "transposition"
@@ -4180,7 +4125,7 @@ const questions = [
     "concept": "equation_basics",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "transposition"
@@ -4199,7 +4144,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 9x = 63. The value of x is ________.",
-    "options": [],
     "correct_answer": "7",
     "concept": "equation_basics",
     "level": 1,
@@ -4223,7 +4167,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 2x + 7 = 19. The value of x is ________.",
-    "options": [],
     "correct_answer": "6",
     "concept": "equation_basics",
     "level": 2,
@@ -4258,7 +4201,7 @@ const questions = [
     "concept": "equation_solving",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "transposition"
@@ -4287,7 +4230,7 @@ const questions = [
     "concept": "equation_solving",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "transposition"
@@ -4317,7 +4260,7 @@ const questions = [
     "concept": "equation_solving",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "clear_fractions"
@@ -4346,7 +4289,7 @@ const questions = [
     "concept": "equation_solving",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "verify_solution",
       "transposition"
@@ -4365,7 +4308,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 11x = 143. The value of x is ________.",
-    "options": [],
     "correct_answer": "13",
     "concept": "equation_solving",
     "level": 1,
@@ -4389,7 +4331,6 @@ const questions = [
   },
   {
     "question_text": "Solve: 3x − 4 = 2x + 9. The value of x is ________.",
-    "options": [],
     "correct_answer": "13",
     "concept": "equation_solving",
     "level": 2,
@@ -4424,7 +4365,7 @@ const questions = [
     "concept": "advanced_equations",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "clear_fractions"
@@ -4454,7 +4395,7 @@ const questions = [
     "concept": "advanced_equations",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "cross_multiplication"
@@ -4484,7 +4425,7 @@ const questions = [
     "concept": "advanced_equations",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "cross_multiplication"
@@ -4514,7 +4455,7 @@ const questions = [
     "concept": "advanced_equations",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "clear_fractions"
@@ -4533,7 +4474,6 @@ const questions = [
   },
   {
     "question_text": "Solve: (5x − 1)/3 = 3. The value of x is ________.",
-    "options": [],
     "correct_answer": "2",
     "concept": "advanced_equations",
     "level": 2,
@@ -4557,7 +4497,6 @@ const questions = [
   },
   {
     "question_text": "Cross-multiplying (x − 2)/4 = 3/2 gives 2(x − 2) = 12, so x = ________.",
-    "options": [],
     "correct_answer": "8",
     "concept": "advanced_equations",
     "level": 2,
@@ -4592,7 +4531,7 @@ const questions = [
     "concept": "word_problems_basic",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "equation_translation"
@@ -4622,7 +4561,7 @@ const questions = [
     "concept": "word_problems_basic",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "equation_translation"
@@ -4651,7 +4590,7 @@ const questions = [
     "concept": "word_problems_basic",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "equation_translation"
@@ -4680,7 +4619,7 @@ const questions = [
     "concept": "word_problems_basic",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "equation_translation"
@@ -4699,7 +4638,6 @@ const questions = [
   },
   {
     "question_text": "The sum of two consecutive integers is 41. The smaller integer is ________.",
-    "options": [],
     "correct_answer": "20",
     "concept": "word_problems_basic",
     "level": 1,
@@ -4723,7 +4661,6 @@ const questions = [
   },
   {
     "question_text": "A number decreased by 9 is 17. The number is ________.",
-    "options": [],
     "correct_answer": "26",
     "concept": "word_problems_basic",
     "level": 1,
@@ -4758,7 +4695,7 @@ const questions = [
     "concept": "word_problems_advanced",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "ratio_problems"
@@ -4788,7 +4725,7 @@ const questions = [
     "concept": "word_problems_advanced",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "age_problems"
@@ -4817,7 +4754,7 @@ const questions = [
     "concept": "word_problems_advanced",
     "level": 2,
     "difficulty": "medium",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "digit_problems"
@@ -4847,7 +4784,7 @@ const questions = [
     "concept": "word_problems_advanced",
     "level": 3,
     "difficulty": "hard",
-    "question_type": "drag_and_drop",
+    "question_type": "drag_sort",
     "skills": [
       "solve_step_by_step",
       "equation_translation"
@@ -4866,7 +4803,6 @@ const questions = [
   },
   {
     "question_text": "The present ages of Anu and Raj are in ratio 4:5. Eight years from now the ratio is 5:6. Anu's present age is ________.",
-    "options": [],
     "correct_answer": "32",
     "concept": "word_problems_advanced",
     "level": 2,
@@ -4890,7 +4826,6 @@ const questions = [
   },
   {
     "question_text": "The sum of the digits of a two-digit number is 9. The number is 4 times the sum of its digits. The number is ________.",
-    "options": [],
     "correct_answer": "36",
     "concept": "word_problems_advanced",
     "level": 3,

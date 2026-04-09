@@ -4,13 +4,34 @@ const Question = require('../models/Question');
 const { processAttempt } = require('../services/learningService');
 const { chooseAdaptiveAction } = require('../services/adaptiveEngineService');
 const { selectQuestionForAction, selectQuestionForConcept } = require('../services/questionSelectionService');
-const { CONCEPT_GRAPH, CONCEPT_TO_SUBTOPIC } = require('../utils/constants');
+const {
+  CONCEPT_GRAPH,
+  CONCEPT_TO_SUBTOPIC,
+  ALLOWED_QUESTION_TYPES,
+} = require('../utils/constants');
 const { getPendingLesson, markLessonAsComplete } = require('../services/lessonService');
 
 function ensureUserModelShape(user) {
   if (!user.progress.concept_levels) {
     user.progress.concept_levels = new Map(CONCEPT_GRAPH.map((c) => [c.id, 1]));
   }
+  if (!user.progress.concept_attempt_counts) {
+    user.progress.concept_attempt_counts = new Map(CONCEPT_GRAPH.map((c) => [c.id, 0]));
+  }
+  if (!user.progress.concept_correct_counts) {
+    user.progress.concept_correct_counts = new Map(CONCEPT_GRAPH.map((c) => [c.id, 0]));
+  }
+  CONCEPT_GRAPH.forEach((node) => {
+    if (!user.progress.concept_levels.has(node.id)) {
+      user.progress.concept_levels.set(node.id, 1);
+    }
+    if (!user.progress.concept_attempt_counts.has(node.id)) {
+      user.progress.concept_attempt_counts.set(node.id, 0);
+    }
+    if (!user.progress.concept_correct_counts.has(node.id)) {
+      user.progress.concept_correct_counts.set(node.id, 0);
+    }
+  });
   if (!user.progress.unlocked_concepts || !user.progress.unlocked_concepts.length) {
     user.progress.unlocked_concepts = ['expressions_foundation'];
   }
@@ -67,6 +88,26 @@ function ensureUserModelShape(user) {
       skip_rate: 0,
     };
   }
+}
+
+function resolveMissionConceptForRequest(user, requestedConcept) {
+  const unlocked = new Set(user.progress.unlocked_concepts || []);
+  const completed = new Set(user.progress.completed_concepts || []);
+
+  if (requestedConcept && unlocked.has(requestedConcept) && !completed.has(requestedConcept)) {
+    return requestedConcept;
+  }
+
+  const currentConcept = user.progress.current_concept;
+  if (currentConcept && unlocked.has(currentConcept) && !completed.has(currentConcept)) {
+    return currentConcept;
+  }
+
+  const firstUnlockedIncomplete = CONCEPT_GRAPH.find(
+    (node) => unlocked.has(node.id) && !completed.has(node.id)
+  );
+
+  return firstUnlockedIncomplete ? firstUnlockedIncomplete.id : null;
 }
 
 async function getOrCreateUser(userId, userName = 'Learner') {
@@ -175,22 +216,18 @@ async function nextQuestion(req, res) {
     const user = await getOrCreateUser(req.authUserId, user_name || 'Learner');
 
     const engine = chooseAdaptiveAction(user.learner_model);
-    const requestedConcept = req.query.concept;
+    const requestedConcept = typeof req.query.concept === 'string' ? req.query.concept : '';
+    const missionConcept = resolveMissionConceptForRequest(user, requestedConcept);
     let selected = null;
-    if (requestedConcept) {
-      selected = await selectQuestionForConcept(user, engine.action, requestedConcept);
-    } else {
+    if (missionConcept) {
+      selected = await selectQuestionForConcept(user, engine.action, missionConcept);
+    }
+    if (!selected) {
       selected = await selectQuestionForAction(user, engine.action);
     }
 
     // Ensure selected question is of an allowed type; if not, try to find a replacement
-      const allowedTypes = [
-        'mcq',
-        'fill_blank',
-        'fill_in_the_blank',
-        'drag_sort',
-        'drag_and_drop',
-      ];
+    const allowedTypes = ALLOWED_QUESTION_TYPES;
     if (selected && selected.question && !allowedTypes.includes((selected.question.question_type || '').toLowerCase())) {
       try {
         const alt = await Question.findOne({

@@ -9,6 +9,10 @@ function initConceptLevels() {
   return Object.fromEntries(CONCEPT_GRAPH.map((c) => [c.id, 1]));
 }
 
+function initConceptCounterMap() {
+  return Object.fromEntries(CONCEPT_GRAPH.map((c) => [c.id, 0]));
+}
+
 function initSkillMastery() {
   const skills = new Set();
   CONCEPT_GRAPH.forEach((concept) => {
@@ -111,6 +115,16 @@ const progressSchema = new mongoose.Schema(
       type: Map,
       of: Number,
       default: initConceptLevels,
+    },
+    concept_attempt_counts: {
+      type: Map,
+      of: Number,
+      default: initConceptCounterMap,
+    },
+    concept_correct_counts: {
+      type: Map,
+      of: Number,
+      default: initConceptCounterMap,
     },
     unlocked_concepts: {
       type: [String],

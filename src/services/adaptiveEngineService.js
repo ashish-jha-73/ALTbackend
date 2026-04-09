@@ -35,17 +35,20 @@ function evaluateAction(action, state) {
   const baseIdx = difficultyToIndex(action.baseDifficulty);
   const actionIdx = difficultyToIndex(action.difficulty);
   const diffGap = Math.abs(actionIdx - baseIdx);
+  const structuredTypes = new Set(['drag_sort', 'drag_and_drop']);
+  const quickRecallTypes = new Set(['mcq', 'fill_blank', 'fill_in_the_blank']);
 
   const loadPenalty = state.loadScore > 4 && actionIdx > baseIdx ? 0.7 : 0;
   const fatiguePenalty = state.fatigue > 0.6 && action.explanationDepth === 'short' ? 0.5 : 0;
-  const errorPenalty = state.errorRepeat && action.questionType !== 'error_detection' ? 0.4 : 0;
+  const errorPenalty = state.errorRepeat && quickRecallTypes.has(action.questionType) ? 0.2 : 0;
   const confusionPenalty = diffGap > 1 ? 0.3 : 0;
 
   const learningGain =
     (state.correctStreak >= 2 && actionIdx >= baseIdx ? 0.9 : 0.5) +
     (state.wrongStreak >= 2 && actionIdx <= baseIdx ? 0.35 : 0) +
-    (action.questionType === 'step' ? 0.1 : 0) +
-    (action.questionType === 'error_detection' && state.errorRepeat ? 0.35 : 0);
+    (state.correctStreak >= 2 && structuredTypes.has(action.questionType) ? 0.1 : 0) +
+    (state.wrongStreak >= 2 && quickRecallTypes.has(action.questionType) ? 0.12 : 0) +
+    (state.errorRepeat && structuredTypes.has(action.questionType) ? 0.18 : 0);
 
   const cognitiveLoad =
     (actionIdx + 1) * 0.8 +

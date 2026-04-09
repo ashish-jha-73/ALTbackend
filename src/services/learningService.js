@@ -2,6 +2,7 @@ const Attempt = require('../models/Attempt');
 const { detectErrorType } = require('./errorDetectionService');
 const { buildMetaFeedback } = require('./feedbackService');
 const { CONCEPT_GRAPH } = require('../utils/constants');
+const { areAnswersEquivalent } = require('../utils/answerNormalization');
 const {
   updateLearnerState,
   computeCognitiveLoad,
@@ -34,7 +35,7 @@ async function processAttempt({
   actionTaken,
   skipped,
 }) {
-  const finalCorrect = !skipped && submittedAnswer === question.correct_answer;
+  const finalCorrect = !skipped && areAnswersEquivalent(submittedAnswer, question.correct_answer);
   const expectedTime = question.time_expected || 60;
 
   const detectedErrorType = detectErrorType({

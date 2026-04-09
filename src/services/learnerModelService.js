@@ -1,11 +1,76 @@
 const { updateConceptMastery } = require('./masteryService');
 const { inferConfidence } = require('./scoringService');
-const { MASTERY_UNLOCK_THRESHOLD } = require('../utils/constants');
+const {
+  MASTERY_UNLOCK_THRESHOLD,
+  CONCEPT_UNLOCK_RULES,
+  MASTERY_UPDATE_RULES,
+} = require('../utils/constants');
 const { updateBKT } = require('./bktService');
 
 
 function clamp01(value) {
   return Math.max(0, Math.min(1, value));
+}
+
+function clampRange(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function getConfidenceAlignment(selfReported, inferredLabel, finalCorrect) {
+  if ((selfReported === 'high' && !finalCorrect) || inferredLabel === 'overconfident') {
+    return 'overconfidence';
+  }
+
+  if (selfReported === 'low' && finalCorrect && (inferredLabel === 'high' || inferredLabel === 'medium')) {
+    return 'underconfidence';
+  }
+
+  return 'calibrated';
+}
+
+function getDifficultyFactorForDelta(delta, difficulty, contextCfg) {
+  const difficultyKey = (difficulty || 'medium').toLowerCase();
+  if (delta < 0) {
+    return (contextCfg.difficultyLoss && contextCfg.difficultyLoss[difficultyKey]) || 1;
+  }
+  return (contextCfg.difficultyGain && contextCfg.difficultyGain[difficultyKey]) || 1;
+}
+
+function computeMasteryContextWeight({
+  delta,
+  difficulty,
+  timeTaken,
+  expectedTime,
+  finalCorrect,
+  selfReportedConfidence,
+  inferredLabel,
+}) {
+  const contextCfg = MASTERY_UPDATE_RULES.context || {};
+
+  let weight = getDifficultyFactorForDelta(delta, difficulty, contextCfg);
+
+  const speedRatio = expectedTime > 0 ? timeTaken / expectedTime : 1;
+  const fastScore = clamp01((1 - speedRatio) / 0.5);
+  const slowScore = clamp01((speedRatio - 1) / 0.8);
+
+  if (finalCorrect && delta >= 0) {
+    weight += fastScore * (contextCfg.fastTimeBonus || 0);
+    weight -= slowScore * (contextCfg.slowTimePenalty || 0);
+  } else if (!finalCorrect) {
+    const fastWrongScore = clamp01((0.6 - speedRatio) / 0.3);
+    weight -= fastWrongScore * (contextCfg.fastWrongPenalty || 0);
+  }
+
+  const alignment = getConfidenceAlignment(selfReportedConfidence, inferredLabel, finalCorrect);
+  if (alignment === 'calibrated' && finalCorrect && delta >= 0) {
+    weight += contextCfg.calibratedBonus || 0;
+  } else if (alignment === 'overconfidence') {
+    weight -= contextCfg.overconfidencePenalty || 0;
+  } else if (alignment === 'underconfidence') {
+    weight -= contextCfg.underconfidencePenalty || 0;
+  }
+
+  return clampRange(weight, contextCfg.minWeight || 0.8, contextCfg.maxWeight || 1.2);
 }
 
 function computeCognitiveLoad({ attempts, usedHints, timeTaken, expectedTime }) {
@@ -43,18 +108,49 @@ function updateUnlocks(user, conceptGraph) {
   const unlocked = new Set(user.progress.unlocked_concepts || []);
   const completed = new Set(user.progress.completed_concepts || []);
   const knowledge = Object.fromEntries(user.learner_model.knowledge || []);
+  const attemptsMap = Object.fromEntries(user.progress.concept_attempt_counts || []);
+  const correctMap = Object.fromEntries(user.progress.concept_correct_counts || []);
+  const levelMap = Object.fromEntries(user.progress.concept_levels || []);
 
   conceptGraph.forEach((node) => {
+    if (completed.has(node.id)) return;
+
     const mastery = knowledge[node.id] || 0;
-    if (mastery >= MASTERY_UNLOCK_THRESHOLD) {
+    const attempts = attemptsMap[node.id] || 0;
+    const correct = correctMap[node.id] || 0;
+    const accuracy = attempts > 0 ? correct / attempts : 0;
+    const level = levelMap[node.id] || 1;
+
+    const masteryReached = mastery >= MASTERY_UNLOCK_THRESHOLD;
+    const meetsPracticeEvidence =
+      attempts >= CONCEPT_UNLOCK_RULES.minAttemptsPerConcept &&
+      correct >= CONCEPT_UNLOCK_RULES.minCorrectPerConcept &&
+      accuracy >= CONCEPT_UNLOCK_RULES.minAccuracy &&
+      level >= CONCEPT_UNLOCK_RULES.requireLevel;
+
+    const meetsCompletionRules =
+      masteryReached &&
+      (CONCEPT_UNLOCK_RULES.unlockOnMasteryOnly || meetsPracticeEvidence);
+
+    if (meetsCompletionRules) {
       completed.add(node.id);
     }
   });
 
-  conceptGraph.forEach((node) => {
-    const ready = node.prerequisites.every((pid) => completed.has(pid));
-    if (ready) unlocked.add(node.id);
-  });
+  completed.forEach((conceptId) => unlocked.add(conceptId));
+
+  const unlockedIncomplete = [...unlocked].filter((conceptId) => !completed.has(conceptId));
+
+  if (!CONCEPT_UNLOCK_RULES.singleActiveConcept || unlockedIncomplete.length === 0) {
+    const nextNode = conceptGraph.find((node) => {
+      if (completed.has(node.id) || unlocked.has(node.id)) return false;
+      return node.prerequisites.every((pid) => completed.has(pid));
+    });
+
+    if (nextNode) {
+      unlocked.add(nextNode.id);
+    }
+  }
 
   user.progress.completed_concepts = [...completed];
   user.progress.unlocked_concepts = [...unlocked];
@@ -80,12 +176,14 @@ function updateConfidenceCalibration(user, selfReported, inferredLabel, finalCor
   user.learner_model.confidence_model.self_reported = selfReported;
   user.learner_model.confidence_model.inferred = inferredLabel;
 
-  if ((selfReported === 'high' && !finalCorrect) || inferredLabel === 'overconfident') {
+  const alignment = getConfidenceAlignment(selfReported, inferredLabel, finalCorrect);
+
+  if (alignment === 'overconfidence') {
     user.learner_model.confidence_model.overconfidence_count += 1;
     return 'overconfidence';
   }
 
-  if (selfReported === 'low' && finalCorrect && (inferredLabel === 'high' || inferredLabel === 'medium')) {
+  if (alignment === 'underconfidence') {
     user.learner_model.confidence_model.underconfidence_count += 1;
     return 'underconfidence';
   }
@@ -152,14 +250,64 @@ function updateLearnerState({
   const expectedTime = question.time_expected || 60;
   const load = computeCognitiveLoad({ attempts, usedHints, timeTaken, expectedTime });
   const concept = question.concept;
-  const previousMastery = user.learner_model.knowledge.get(concept) || 0.2;
-  const updatedMastery = updateBKT({
+  const previousMastery = user.learner_model.knowledge.get(concept) ?? MASTERY_UPDATE_RULES.defaultPrior;
+
+  const inferredConfidence = inferConfidence({
+    finalCorrect,
+    timeTaken,
+    attempts,
+    usedHints,
+    expectedTime,
+  });
+
+  const bktMastery = updateBKT({
     prior: previousMastery,
     correct: finalCorrect,
-    slip: 0.05,
-    guess: 0.2,
-    transition: 0.1,
+    slip: MASTERY_UPDATE_RULES.bkt.slip,
+    guess: MASTERY_UPDATE_RULES.bkt.guess,
+    transition: MASTERY_UPDATE_RULES.bkt.transition,
   });
+
+  const behaviorAdjustedMastery = updateConceptMastery(previousMastery, {
+    finalCorrect,
+    attempts,
+    usedHints,
+  });
+
+  const blendWeight = clamp01(MASTERY_UPDATE_RULES.behaviorBlendWeight);
+  const blendedMastery =
+    (1 - blendWeight) * bktMastery + blendWeight * behaviorAdjustedMastery;
+
+  let delta = blendedMastery - previousMastery;
+
+  const maxDelta = Math.max(0, Number(MASTERY_UPDATE_RULES.maxDeltaPerAttempt || 0));
+  if (maxDelta > 0) {
+    delta = clampRange(delta, -maxDelta, maxDelta);
+  }
+
+  const smoothingFactor = clamp01(MASTERY_UPDATE_RULES.smoothingFactor ?? 1);
+  delta *= smoothingFactor;
+
+  const contextWeight = computeMasteryContextWeight({
+    delta,
+    difficulty: question.difficulty,
+    timeTaken,
+    expectedTime,
+    finalCorrect,
+    selfReportedConfidence,
+    inferredLabel: inferredConfidence.label,
+  });
+  delta *= contextWeight;
+
+  if (maxDelta > 0) {
+    const contextCfg = MASTERY_UPDATE_RULES.context || {};
+    const maxBoostCap = Math.max(1, Number(contextCfg.maxBoostCap || 1));
+    const finalCap = maxDelta * Math.max(smoothingFactor, 0.01) * maxBoostCap;
+    delta = clampRange(delta, -finalCap, finalCap);
+  }
+
+  let updatedMastery = previousMastery + delta;
+  updatedMastery = clamp01(updatedMastery);
   user.learner_model.knowledge.set(concept, updatedMastery);
 
   const skillGain = updateSkillMastery(user, question.skills || [], finalCorrect);
@@ -189,14 +337,6 @@ function updateLearnerState({
     }
   }
 
-  const inferredConfidence = inferConfidence({
-    finalCorrect,
-    timeTaken,
-    attempts,
-    usedHints,
-    expectedTime,
-  });
-
   const confidenceState = updateConfidenceCalibration(
     user,
     selfReportedConfidence,
@@ -211,6 +351,20 @@ function updateLearnerState({
 
   user.progress.current_concept = concept;
   user.progress.last_load = load;
+
+  if (!user.progress.concept_attempt_counts) {
+    user.progress.concept_attempt_counts = new Map();
+  }
+  if (!user.progress.concept_correct_counts) {
+    user.progress.concept_correct_counts = new Map();
+  }
+
+  const prevAttempts = user.progress.concept_attempt_counts.get(concept) || 0;
+  user.progress.concept_attempt_counts.set(concept, prevAttempts + 1);
+  if (finalCorrect) {
+    const prevCorrect = user.progress.concept_correct_counts.get(concept) || 0;
+    user.progress.concept_correct_counts.set(concept, prevCorrect + 1);
+  }
 
   const questionId = question._id;
   const history = user.progress.question_history || [];

@@ -10,9 +10,7 @@ const questionSchema = new mongoose.Schema(
       type: [String],
       validate: {
         validator: function (arr) {
-          // For question types that require selectable options (mcq, match, drag_sort, drag_and_drop),
-          // ensure there are at least two options. For fill-in-the-blank/short-answer types, options
-          // may be empty or omitted.
+          // Some question types rely on selectable or draggable options.
           const qt = (this.question_type || '').toLowerCase();
           const requiresOptions = ['mcq', 'fill_blank', 'drag_sort', 'drag_and_drop'];
           if (requiresOptions.includes(qt)) {
@@ -49,11 +47,8 @@ const questionSchema = new mongoose.Schema(
       type: String,
       enum: [
         'mcq',
-        'step',
-        'error_detection',
         'fill_blank',
         'fill_in_the_blank',
-        'match',
         'drag_sort',
         'drag_and_drop',
       ],
